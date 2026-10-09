@@ -2,18 +2,17 @@
 
 A live map of your codebase that lights up wherever Claude is working.
 
-![Repo Radar (sample session)](../../docs/repo-radar.svg)
+![Repo Radar (sample session)](../../docs/repo-radar.png)
 
-Your repo is drawn as a **map of rectangles**: one per top folder, split into its subfolders and sized by file count. As Claude works, the map glows:
+A Flightdeck-style pane in rounded, colour-bordered panels:
 
-- **cyan**: a file was read or searched
-- **amber**: a file was edited or written
-- **red**: a tool call on that file failed
-- **a colour per subagent**: run parallel agents and watch them spread across the repo at the same time
+- **Header**: repo, branch and file count, a live `● scanning` light, and how much of the repo this session touched.
+- **Map**: your repo as tiles sized by file count, one per folder. Reads glow **cyan**, edits **amber**, failures **red**, and **each subagent glows in its own colour**, so you can watch parallel agents spread across the codebase. Glows fade like a radar trace; files touched this session keep a faint tint.
+- **Agents**: each subagent by type (Explore, docs-writer…) with what it read and edited, and where.
+- **Hot zones**: the folders with the most activity, with gauges.
+- **Feed**: timestamped file events.
 
-Glows fade like a radar trace, and every file touched this session keeps a faint tint, so by the end you can see how much of the repo the session changed. A live feed under the map shows the latest file events.
-
-In the terminal it's an animated character grid (about 7 frames a second while something is glowing, idle otherwise). In the desktop app it's an SVG whose glows fade on their own, with the full path on hover.
+The map and the sweep line between panels animate on their own, without redrawing the pane, the same in the terminal and the desktop app. Docked beside a fullscreen transcript you get every panel; seated inline above the prompt it shrinks to a short summary.
 
 ## Install
 

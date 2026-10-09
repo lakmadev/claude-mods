@@ -1,7 +1,7 @@
 import { expect, mock, test } from 'claude-code/testing'
 
-import { buildTree, intensity, layout, mix, squarify, tileFor, toCells } from '../hooks/layout'
-import { relative } from '../hooks/register'
+import { buildTree, fromData, intensity, layout, mix, paint, squarify, tileFor, treeData } from '../hooks/layout'
+import { gauge, relative } from '../hooks/register'
 
 const PATHS = [
   'README.md', 'package.json',
@@ -47,13 +47,18 @@ test('paths map to their folder tile, overflow, or the top folder', () => {
   expect(relative('./src/', '/repo')).toBe('src')
 })
 
-test('heat fades and colors mix', () => {
-  const hit = { kind: 'edit' as const, agent: undefined, at: 0 }
+test('heat fades, colors mix, rows paint to full width', () => {
+  const hit = { kind: 'edit' as const, agent: -1, at: 0 }
   expect(intensity(hit, 0)).toBeGreaterThan(0.9)
   expect(intensity(hit, 60_000)).toBe(0)
   expect(mix(0x000000, 0xffffff, 0.5)).toBe(0x808080)
-  const cells = toCells(layout(buildTree(PATHS), 40, 10), 40, 10, () => ({ bg: 0x123456, glow: 0 }))
-  expect(cells.length).toBe(Math.ceil((40 * 10 * 12) / 3) * 4)
+  expect(gauge(0.25, 8)).toBe('▰▰▱▱▱▱▱▱')
+  const tree = buildTree(PATHS)
+  expect(fromData(treeData(tree)).get('src')?.children.get('api')).toBe(40)
+  const rows = paint(layout(tree, 40, 10), 40, 10, () => ({ bg: 0x123456, glow: 0 }))
+  expect(rows).toHaveLength(10)
+  for (const runs of rows) expect(runs.map(r => r.text).join('')).toHaveLength(40)
+  expect(rows.flat().some(r => r.text.includes('src/'))).toBe(true)
 })
 
 test('a read lights the map on terminal and desktop', async ($, on) => {
@@ -70,9 +75,19 @@ test('a read lights the map on terminal and desktop', async ($, on) => {
   await $.session.start({ cwd: '/repo', surface: 'terminal', isInteractive: true })
   await $.tool.call({ tool: 'Read', file_path: '/repo/src/auth/f1.ts' })
   for (const surface of ['terminal', 'desktop'] as const) {
-    const ui = await $.ui.mount({ plugin: 'repo-radar', surface, component: 'Pane', requestId: 'radar', props: { bodyColumns: 70 } as never, viewport: { columns: 80, rows: 40 } as never })
+    const ui = await $.ui.mount({ plugin: 'repo-radar', surface, component: 'Pane', requestId: 'radar', props: { bodyColumns: 70 } as never, viewport: { columns: 80, rows: 48 } as never })
     const drawn = JSON.stringify(await ui.drawn())
-    expect(drawn).toContain(surface === 'terminal' ? '"type":"Raster"' : '"type":"Svg"')
+    expect(drawn).toContain('"type":"Client"')
+    expect(drawn).toContain('HOT ZONES')
     expect(drawn).toContain('src/auth/f1.ts')
+    const map = JSON.stringify(await ui.drawn({ in: 'map' }))
+    expect(map).toContain('backgroundColor')
+    expect(map).toContain(' src/')
+    await ui.unmount()
   }
+  // Seated inline: one compact panel.
+  const inline = await $.ui.mount({ plugin: 'repo-radar', surface: 'terminal', component: 'Pane', requestId: 'radar', props: { bodyColumns: 70 } as never, viewport: { columns: 80, rows: 8 } as never })
+  const compact = JSON.stringify(await inline.drawn())
+  expect(compact).not.toContain('HOT ZONES')
+  expect(compact).toContain('src/auth')
 })

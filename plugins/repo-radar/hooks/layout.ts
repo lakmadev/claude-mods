@@ -1,11 +1,15 @@
-// Pure parts of the radar: the repo tree, a squarified treemap in terminal cells, and heat colors.
+// Pure parts of the radar, shared by the hooks module and the map's surface module:
+// the repo tree, a squarified treemap in terminal cells, heat colors, and rows of colored runs.
 
 export type Tree = Map<string, { files: number; children: Map<string, number> }>
+export type TreeData = [name: string, files: number, children: [name: string, files: number][]][]
 export type Tile = { key: string; label: string; x0: number; y0: number; x1: number; y1: number; isHeader: boolean }
 export type Kind = 'read' | 'edit' | 'error'
-export type Hit = { kind: Kind; agent: string | undefined; at: number }
+export type Hit = { kind: Kind; agent: number; at: number } // agent -1 is the main loop
+export type Run = { text: string; bg?: string; fg?: string; bold?: boolean }
 
 const MAX_PER_LEVEL = 12
+const MAX_SENT_CHILDREN = 30
 export const MORE = '…'
 
 export function addPath(tree: Tree, path: string): void {
@@ -22,6 +26,17 @@ export function buildTree(paths: readonly string[]): Tree {
   for (const path of paths) if (path) addPath(tree, path)
   return tree
 }
+
+// What crosses to the surface module: small folders folded into one `…` child, so props stay small.
+export function treeData(tree: Tree): TreeData {
+  return [...tree].map(([name, g]) => {
+    const kids = [...g.children].sort((a, b) => b[1] - a[1])
+    const rest = kids.slice(MAX_SENT_CHILDREN).reduce((sum, [, n]) => sum + n, 0)
+    return [name, g.files, rest ? [...kids.slice(0, MAX_SENT_CHILDREN), [MORE, rest]] : kids]
+  })
+}
+
+export const fromData = (data: TreeData): Tree => new Map(data.map(([name, files, kids]) => [name, { files, children: new Map(kids) }]))
 
 type Item = { key: string; label: string; weight: number }
 type Rect = { x: number; y: number; w: number; h: number }
@@ -110,10 +125,12 @@ export function tileFor(tiles: readonly Tile[], path: string): Tile | undefined 
   return (second !== undefined && path.includes('/') ? byKey(`${top}/${second}`) ?? byKey(`${top}/${MORE}`) : undefined) ?? byKey(top!) ?? byKey(MORE)
 }
 
+// The zone a path counts toward in the hot-zones list: its first two segments.
+export const zoneOf = (path: string) => (path.includes('/') ? path.split('/').slice(0, 2).join('/') : path)
+
 export const COLORS = {
-  gap: 0x0b0f17,
-  header: 0x111827,
-  headerText: 0x9ca3af,
+  header: 0x161b26,
+  headerText: 0x8b93a7,
   tileA: 0x1c2533,
   tileB: 0x222d3d,
   text: 0xd1d5db,
@@ -123,14 +140,14 @@ export const COLORS = {
   error: 0xef4444,
 }
 export const AGENT_COLORS = [0xa78bfa, 0xf472b6, 0xa3e635, 0x2dd4bf, 0xfb923c, 0x60a5fa]
-
 export const DECAY_MS: Record<Kind, number> = { read: 5000, edit: 10000, error: 6000 }
 
-export function glowColor(hit: Hit, agentIndex: (id: string) => number): number {
+export const agentColor = (agent: number) => AGENT_COLORS[agent % AGENT_COLORS.length]!
+
+export function glowColor(hit: Pick<Hit, 'kind' | 'agent'>): number {
   if (hit.kind === 'error') return COLORS.error
-  if (hit.agent === undefined) return COLORS[hit.kind]
-  const base = AGENT_COLORS[agentIndex(hit.agent) % AGENT_COLORS.length]!
-  return hit.kind === 'read' ? mix(base, COLORS.tileA, 0.35) : base
+  if (hit.agent < 0) return COLORS[hit.kind]
+  return hit.kind === 'read' ? mix(agentColor(hit.agent), COLORS.tileA, 0.35) : agentColor(hit.agent)
 }
 
 export const intensity = (hit: Hit, now: number) => Math.max(0, Math.exp(-(now - hit.at) / DECAY_MS[hit.kind]) - 0.02)
@@ -143,76 +160,41 @@ export function mix(a: number, b: number, t: number): number {
 export const hex = (color: number) => `#${color.toString(16).padStart(6, '0')}`
 
 // What a tile looks like now: resting shade, a faint tint once touched, the glow of its latest hit.
-export function tileColor(tile: Tile, index: number, hit: Hit | undefined, touched: Kind | undefined, now: number, agentIndex: (id: string) => number) {
+export function tileColor(tile: Tile, index: number, hit: Hit | undefined, touched: Kind | undefined, now: number) {
   const rest = tile.isHeader ? COLORS.header : index % 2 ? COLORS.tileA : COLORS.tileB
   const tinted = touched ? mix(rest, COLORS[touched], 0.16) : rest
   if (!hit) return { bg: tinted, glow: 0 }
   const glow = intensity(hit, now)
-  return { bg: mix(tinted, glowColor(hit, agentIndex), Math.min(0.9, glow)), glow }
+  return { bg: mix(tinted, glowColor(hit), Math.min(0.9, glow)), glow }
 }
 
-const printable = (text: string) => text.replace(/[^\x20-\x7e]/g, '?')
-
-// Raster cells: [codePoint, fg, bg] little-endian u32 triplets, base64.
-export function toCells(
-  tiles: readonly Tile[],
-  columns: number,
-  rows: number,
-  look: (tile: Tile, index: number) => { bg: number; glow: number },
-): string {
-  const grid = Array.from({ length: rows }, () => Array.from({ length: columns }, () => [0x20, COLORS.text, COLORS.gap]))
-  tiles.forEach((tile, index) => {
-    const { bg, glow } = look(tile, index)
-    const fg = tile.isHeader ? (glow > 0.3 ? COLORS.dark : COLORS.headerText) : glow > 0.45 ? COLORS.dark : COLORS.text
-    const right = tile.x1 - tile.x0 > 2 ? tile.x1 - 1 : tile.x1 // one-column gutter between tiles
-    for (let y = tile.y0; y < Math.min(tile.y1, rows); y++) {
-      for (let x = tile.x0; x < Math.min(right, columns); x++) grid[y]![x] = [0x20, fg, bg]
+// The map as rows of runs: one run per tile per row, a blank gutter column between tiles,
+// the label on each tile's first row. Every surface draws it with Text alone.
+export function paint(tiles: readonly Tile[], columns: number, rows: number, look: (tile: Tile, index: number) => { bg: number; glow: number }): Run[][] {
+  const owner = Array.from({ length: rows }, () => Array<number>(columns).fill(-1))
+  tiles.forEach((t, i) => {
+    const right = t.x1 - t.x0 > 2 ? t.x1 - 1 : t.x1
+    for (let y = t.y0; y < Math.min(t.y1, rows); y++) for (let x = t.x0; x < Math.min(right, columns); x++) owner[y]![x] = i
+  })
+  const looks = tiles.map(look)
+  return owner.map((row, y) => {
+    const runs: Run[] = []
+    for (let x = 0; x < columns; ) {
+      const i = row[x]!
+      let end = x
+      while (end < columns && row[end] === i) end++
+      const width = end - x
+      const tile = tiles[i]
+      if (!tile) runs.push({ text: ' '.repeat(width) })
+      else {
+        const { bg, glow } = looks[i]!
+        const label = y === tile.y0 && width >= 4 ? ` ${tile.label}` : ''
+        const text = label.length > width ? `${label.slice(0, Math.max(0, width - 1))}…`.slice(0, width) : label.padEnd(width)
+        const fg = glow > 0.45 ? COLORS.dark : tile.isHeader ? COLORS.headerText : COLORS.text
+        runs.push({ text, bg: hex(bg), fg: hex(fg), bold: label !== '' && glow > 0.3 })
+      }
+      x = end
     }
-    const label = printable(tile.label).slice(0, Math.max(0, right - tile.x0 - 1))
-    ;[...label].forEach((ch, i) => {
-      if (tile.y0 < rows && tile.x0 + 1 + i < columns) grid[tile.y0]![tile.x0 + 1 + i] = [ch.charCodeAt(0), fg, bg]
-    })
+    return runs
   })
-  const view = new DataView(new ArrayBuffer(columns * rows * 12))
-  let at = 0
-  for (const row of grid) for (const cell of row) for (const word of cell) view.setUint32(at, word, true), (at += 4)
-  return toBase64(new Uint8Array(view.buffer))
-}
-
-const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-export function toBase64(bytes: Uint8Array): string {
-  let out = ''
-  for (let i = 0; i < bytes.length; i += 3) {
-    const n = (bytes[i]! << 16) | ((bytes[i + 1] ?? 0) << 8) | (bytes[i + 2] ?? 0)
-    out += B64[(n >> 18) & 63]! + B64[(n >> 12) & 63]!
-    out += i + 1 < bytes.length ? B64[(n >> 6) & 63]! : '='
-    out += i + 2 < bytes.length ? B64[n & 63]! : '='
-  }
-  return out
-}
-
-const escapeXml = (text: string) => text.replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' })[c]!)
-
-// Desktop: the same tiles in SVG; a glowing tile fades back to rest on its own via SMIL.
-export function toSvg(
-  tiles: readonly Tile[],
-  columns: number,
-  rows: number,
-  look: (tile: Tile, index: number) => { bg: number; glow: number; rest: number; remainingMs: number },
-): string {
-  const cw = 9
-  const ch = 18
-  const body = tiles.map((tile, index) => {
-    const { bg, glow, rest, remainingMs } = look(tile, index)
-    const x = tile.x0 * cw
-    const y = tile.y0 * ch
-    const w = Math.max(1, (tile.x1 - tile.x0) * cw - 3)
-    const h = Math.max(1, (tile.y1 - tile.y0) * ch - (tile.isHeader ? 1 : 3))
-    const fade = glow > 0.02 ? `<animate attributeName="fill" from="${hex(bg)}" to="${hex(rest)}" dur="${Math.max(0.3, remainingMs / 1000).toFixed(2)}s" fill="freeze"/>` : ''
-    const textFill = tile.isHeader ? hex(COLORS.headerText) : hex(COLORS.text)
-    const maxChars = Math.floor(w / 7) - 1
-    const label = maxChars > 1 ? `<text x="${x + 6}" y="${y + 13}" fill="${textFill}" font-size="11">${escapeXml(tile.label.slice(0, maxChars))}</text>` : ''
-    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${tile.isHeader ? 2 : 4}" fill="${hex(bg)}">${fade}<title>${escapeXml(tile.key)}</title></rect>${label}`
-  })
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${columns * cw}" height="${rows * ch}" font-family="ui-monospace,Menlo,monospace"><rect width="100%" height="100%" rx="6" fill="${hex(COLORS.gap)}"/>${body.join('')}</svg>`
 }

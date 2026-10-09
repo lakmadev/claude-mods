@@ -4,7 +4,7 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 
 ## Repo Radar
 
-![Repo Radar: a live map of where Claude is working](docs/repo-radar.svg)
+![Repo Radar: a live map of where Claude is working](docs/repo-radar.png)
 
 **repo-radar** draws your repo as a live map of rectangles, one per folder. Reads glow **cyan**, edits **amber**, failures **red**, and each subagent gets its own colour, so you can watch parallel agents work across your codebase. Glows fade like a radar trace; files touched this session keep a faint tint. `/radar` opens it. [More →](plugins/repo-radar)
 
