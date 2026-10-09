@@ -14,11 +14,11 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 
 ## For fun
 
-![pixel-pet: four forms, six moods](docs/pixel-pet.png)
+![pixel-pet: the band](docs/pixel-pet-band.png)
 
 | Mod | What it does |
 | --- | --- |
-| **pixel-pet** | A tiny animated pixel critter above your prompt, four rows tall. It bobs while Claude works, bounces with sparkles when a turn finishes, sweats on errors, dozes when you're away, blushes when you press **♥ pet**, and watches you type: its eyes follow your caret, it winces at backspaces and gasps when you delete a chunk. Moods crossfade instead of popping. It levels up every turn and changes colour as it grows: teal sprout → purple spark (lv 3) → coral blaze (lv 6) → golden legend with a crown (lv 10). `/pet` for stats, `/pet rename <name>`, `/pet color pink`, `/pet hide`. |
+| **pixel-pet** | A tiny animated pixel pet above your prompt with a live context meter beside it. It bobs while Claude works, celebrates finished turns, sweats on errors, and dozes when you're away. Click it to pet it. It watches you type: its eyes follow your caret, it winces at backspaces and gasps when you delete a chunk. The gradient context meter glides and shimmers. 28 colours via `/pet color <name>`, previewed as you type. |
 | **code-wrapped** | `/wrapped` opens your Claude Code Wrapped: a GitHub-style activity heatmap, hours, lines, streaks, top files and tools, your coding personality (Night Owl 🦉, Refactorer 🧹, Shell Wizard 🧙…) and 14 unlockable achievements that pop as toasts. **Copy share text** puts a one-line brag on your clipboard. |
 | **lofi-mode** | Soft lo-fi beats start when Claude has been working for a few seconds and stop when it finishes. The loop is original and synthesized for this mod. `/lofi` toggles it. macOS audio. |
 
@@ -55,7 +55,7 @@ Each mod's options show in `/config` once it is installed:
 - **prompt-booster**: `autoContext` (on), `maxWords` (15)
 - **session-journal**: `retentionDays` (30), `model` (`haiku`)
 - **secrets-redactor**: `aggressive` (off). Also redacts quoted `password = "…"`-style assignments.
-- **pixel-pet**: `name` (Bit), `color` (auto), `sound` (on)
+- **pixel-pet**: `name` (Bit), `color` (teal)
 - **lofi-mode**: `volume` (0.35), `delaySeconds` (4)
 
 ## Limits
