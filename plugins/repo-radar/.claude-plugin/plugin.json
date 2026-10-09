@@ -1,0 +1,10 @@
+{
+  "name": "repo-radar",
+  "version": "0.1.0",
+  "description": "A live map of your codebase that lights up where Claude is working: reads glow cyan, edits amber, errors red, each subagent in its own colour.",
+  "author": { "name": "lakmadev", "url": "https://github.com/lakmadev" },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "openOnStart": { "type": "boolean", "title": "Open on start", "description": "Open the radar beside the transcript when a session starts (terminals 144+ columns wide). Otherwise use /radar.", "default": true }
+  }
+}

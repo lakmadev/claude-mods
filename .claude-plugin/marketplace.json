@@ -1,11 +1,16 @@
 {
   "name": "claude-mods",
-  "description": "Ten mods for Claude Code: a pixel pet, Code Wrapped, lo-fi beats, plus everyday tools for safety, focus and context.",
+  "description": "Eleven mods for Claude Code: Repo Radar, a pixel pet, Code Wrapped, lo-fi beats, plus everyday tools for safety, focus and context.",
   "owner": {
     "name": "lakmadev",
     "url": "https://github.com/lakmadev"
   },
   "plugins": [
+    {
+      "name": "repo-radar",
+      "source": "./plugins/repo-radar",
+      "description": "A live map of your codebase that lights up where Claude is working: reads glow cyan, edits amber, errors red, each subagent in its own colour."
+    },
     {
       "name": "context-meter",
       "source": "./plugins/context-meter",
