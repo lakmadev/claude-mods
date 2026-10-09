@@ -1,0 +1,10 @@
+{
+  "name": "lofi-mode",
+  "version": "0.1.0",
+  "description": "Lo-fi beats while Claude works: a soft loop starts on long turns and stops the moment it's done. /lofi toggles.",
+  "author": { "name": "lakmadev", "url": "https://github.com/lakmadev" },
+  "userConfig": {
+    "volume": { "type": "number", "title": "Volume (0-1)", "description": "Loop volume.", "default": 0.35 },
+    "delaySeconds": { "type": "number", "title": "Start after (s)", "description": "Only start the music if Claude is still working after this many seconds.", "default": 4 }
+  }
+}

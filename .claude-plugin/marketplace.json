@@ -1,6 +1,6 @@
 {
   "name": "claude-mods",
-  "description": "Seven everyday mods for Claude Code: cost meter, safety net, changes pane, notifier, prompt booster, journal and secrets redactor.",
+  "description": "Ten mods for Claude Code: a pixel pet, Code Wrapped, lo-fi beats, plus everyday tools for safety, focus and context.",
   "owner": {
     "name": "lakmadev",
     "url": "https://github.com/lakmadev"
@@ -40,6 +40,21 @@
       "name": "secrets-redactor",
       "source": "./plugins/secrets-redactor",
       "description": "Scrubs API keys, tokens and private keys from prompts and tool output before the model sees them."
+    },
+    {
+      "name": "pixel-pet",
+      "source": "./plugins/pixel-pet",
+      "description": "An animated pixel-art companion above your prompt that reacts to your session and levels up as you code."
+    },
+    {
+      "name": "code-wrapped",
+      "source": "./plugins/code-wrapped",
+      "description": "Your Claude Code Wrapped: activity heatmap, top files, coding personality and unlockable achievements."
+    },
+    {
+      "name": "lofi-mode",
+      "source": "./plugins/lofi-mode",
+      "description": "Lo-fi beats while Claude works: a soft loop starts on long turns and stops the moment it's done."
     }
   ]
 }

@@ -1,6 +1,18 @@
 # claude-mods
 
-Seven small mods for [Claude Code](https://claude.com/claude-code). Install the ones you want; each is independent.
+Ten mods for [Claude Code](https://claude.com/claude-code): three for fun, seven for everyday work. Install the ones you want; each is independent.
+
+## For fun
+
+![pixel-pet: five evolution forms, six moods](docs/pixel-pet.png)
+
+| Mod | What it does |
+| --- | --- |
+| **pixel-pet** | An animated pixel critter above your prompt. It bounces while Claude works, celebrates finished turns, sweats on errors, naps when you're away, and blushes when you press **Pet ♥**. It earns XP every turn and evolves: teal sprout → purple spark → antenna at level 5 → coral blaze → golden crowned legend at 10. `/pet` for stats, `/pet rename <name>`, `/pet hide`. |
+| **code-wrapped** | `/wrapped` opens your Claude Code Wrapped: a GitHub-style activity heatmap, hours, lines, streaks, top files and tools, your coding personality (Night Owl 🦉, Refactorer 🧹, Shell Wizard 🧙…) and 14 unlockable achievements that pop as toasts. **Copy share text** puts a one-line brag on your clipboard. |
+| **lofi-mode** | Soft lo-fi beats start when Claude has been working for a few seconds and stop when it finishes. The loop is original and synthesized for this mod. `/lofi` toggles it. macOS audio. |
+
+## For work
 
 | Mod | What it does |
 | --- | --- |
@@ -17,7 +29,7 @@ Seven small mods for [Claude Code](https://claude.com/claude-code). Install the 
 In a Claude Code terminal session:
 
 ```
-/plugin install context-meter --marketplace lakmadev/claude-mods
+/plugin install pixel-pet --marketplace lakmadev/claude-mods
 ```
 
 Answer `y` to add the marketplace, then pick a scope. Repeat with any other mod name from the table.
@@ -33,11 +45,14 @@ Each mod's options show in `/config` once it is installed:
 - **prompt-booster**: `autoContext` (on), `maxWords` (15)
 - **session-journal**: `retentionDays` (30), `model` (`haiku`)
 - **secrets-redactor**: `aggressive` (off). Also redacts quoted `password = "…"`-style assignments.
+- **pixel-pet**: `name` (Bit), `sound` (on)
+- **lofi-mode**: `volume` (0.35), `delaySeconds` (4)
 
 ## Limits
 
 - safety-net matches patterns. It is not a sandbox: obfuscated commands (`eval`, base64, aliases) get through.
 - secrets-redactor only catches known token shapes. Once a secret is redacted, Claude can't use it: put real values in files yourself.
+- pixel-pet, code-wrapped and session-journal keep their data in Claude Code's plugin store on your machine. Two sessions finishing a turn at the same instant can drop one update.
 - done-notifier plays its chime on macOS only. Desktop notifications use `osascript` (macOS) or `notify-send` (Linux).
 - session-journal keeps your prompts locally, in Claude Code's plugin store on your machine. `/standup` sends the log to the model you configure.
 
