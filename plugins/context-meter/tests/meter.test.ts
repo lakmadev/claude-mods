@@ -1,22 +1,33 @@
 import { expect, test } from 'claude-code/testing'
 
-import { formatMeter, warnings } from '../hooks/register'
+import { formatMeter, resetIn, sourceOf, warnings } from '../hooks/register'
 
-const reading = (percent: number, used = 10) => ({
+const NOW = Date.parse('2026-10-09T12:00:00Z')
+const reading = (percent: number, used = 10, limits = true) => ({
   context: { tokens: 160_000, window: 200_000, percent },
-  rateLimits: [{ kind: 'five_hour', percentUsed: used }],
+  rateLimits: limits ? [{ kind: 'five_hour', percentUsed: used, resetsAt: '2026-10-09T13:52:00Z' }, { kind: 'seven_day', percentUsed: 40, resetsAt: '2026-10-12T16:00:00Z' }] : [],
   cost: { usd: 1.234 },
 })
 
-test('formats context, cost and limits on one line', () => {
-  expect(formatMeter(reading(80))).toBe('ctx 80% (160k/200k) · $1.23 · 5h 10%')
+test('on a Claude plan: the windows by name, with gauges and resets; the $ is only an estimate', () => {
+  const r = reading(80, 85)
+  expect(formatMeter(r, sourceOf(r, 'api'), NOW)).toBe('ctx ▰▰▰▰▱ 80% 160k/200k │ 5h limit ▰▰▰▰▱ 85% resets 1h52m │ weekly ▰▰▱▱▱ 40% resets 3d4h │ Claude plan · ≈$1.23 at API rates')
+})
+
+test('on the API or a cloud provider: no windows, and the $ is the bill', () => {
+  const r = reading(30, 0, false)
+  expect(formatMeter(r, sourceOf(r, 'api'), NOW)).toBe('ctx ▰▰▱▱▱ 30% 160k/200k │ $1.23 billed · API')
+  expect(formatMeter(r, sourceOf(r, 'bedrock'), NOW)).toContain('$1.23 billed · Bedrock')
+  expect(resetIn('2026-10-09T12:38:00Z', NOW)).toBe('38m')
 })
 
 test('warns once per crossing and re-arms below the threshold', () => {
   const warned = new Set<string>()
   const limits = { context: 80, rateLimit: 90 }
-  expect(warnings(reading(81), limits, warned)).toHaveLength(1)
-  expect(warnings(reading(85), limits, warned)).toHaveLength(0)
-  expect(warnings(reading(20), limits, warned)).toHaveLength(0)
-  expect(warnings(reading(90, 95), limits, warned)).toHaveLength(2)
+  expect(warnings(reading(81), limits, warned, NOW)).toHaveLength(1)
+  expect(warnings(reading(85), limits, warned, NOW)).toHaveLength(0)
+  expect(warnings(reading(20), limits, warned, NOW)).toHaveLength(0)
+  const both = warnings(reading(90, 95), limits, warned, NOW)
+  expect(both).toHaveLength(2)
+  expect(both[1]).toBe("Your Claude plan's 5h limit is at 95%; it resets in 1h52m.")
 })

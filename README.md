@@ -18,7 +18,7 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 
 | Mod | What it does |
 | --- | --- |
-| **pixel-pet** | A tiny animated pixel pet above your prompt with a live context meter beside it. It bobs while Claude works, celebrates finished turns, sweats on errors, and dozes when you're away. Click it to pet it. It watches you type: its eyes follow your caret, it winces at backspaces and gasps when you delete a chunk. The gradient context meter glides and shimmers. 28 colours via `/pet color <name>`, previewed as you type. |
+| **pixel-pet** | A tiny animated pixel pet above your prompt with a live context meter beside it. It bobs while Claude works, celebrates finished turns, sweats on errors, and dozes when you're away. Click it to pet it. It narrates what Claude is doing (reading, editing, running tests, committing…) with a sliding line, and watches you type: its eyes follow your caret, it winces at backspaces and gasps when you delete a chunk. The gradient context meter glides and shimmers. 28 colours via `/pet color <name>`, previewed as you type. |
 | **code-wrapped** | `/wrapped` opens your Claude Code Wrapped: a GitHub-style activity heatmap, hours, lines, streaks, top files and tools, your coding personality (Night Owl 🦉, Refactorer 🧹, Shell Wizard 🧙…) and 14 unlockable achievements that pop as toasts. **Copy share text** puts a one-line brag on your clipboard. |
 | **lofi-mode** | Soft lo-fi beats start when Claude has been working for a few seconds and stop when it finishes. The loop is original and synthesized for this mod. `/lofi` toggles it. macOS audio. |
 
@@ -26,7 +26,7 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 
 | Mod | What it does |
 | --- | --- |
-| **context-meter** | Status line: `ctx 62% (124k/200k) · $1.84 · 5h 41%`. Toasts when context passes 80% or a usage window passes 90%. |
+| **context-meter** | Status line that says where you stand and who pays: `ctx ▰▰▰▱▱ 62% 124k/200k │ 5h limit ▰▰▰▰▱ 85% resets 1h52m │ weekly ▰▰▱▱▱ 40% resets 3d4h │ Claude plan · ≈$1.84 at API rates`, or on the API `… │ $1.84 billed · API`. Toasts when context passes 80% or a plan window passes 90%. |
 | **safety-net** | Refuses catastrophic commands (`rm -rf ~`, `mkfs`, `dd of=/dev/disk`, fork bombs). Asks before risky ones (force-push, `reset --hard`, `curl \| sh`, `DROP TABLE`, `terraform destroy`, `sudo`, …) and before edits to `.env`, keys, `~/.ssh`, `.git/` or shell rc files. |
 | **changes-pane** | Side pane listing every file Claude changed this session with `+/-` line counts. `/changes` opens it. |
 | **done-notifier** | Chime, toast and desktop notification when a turn longer than 30s finishes or Claude is waiting for you. |
