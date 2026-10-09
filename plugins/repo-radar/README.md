@@ -16,6 +16,8 @@ The map and the sweep line between panels animate on their own, without redrawin
 
 ## Install
 
+Requires **Claude Code 2.1.293 or later**: mods are an early-access feature and gain events with each release. Check with `claude --version`; update with `claude update`.
+
 ```
 /plugin marketplace add lakmadev/claude-mods
 /plugin install repo-radar@claude-mods

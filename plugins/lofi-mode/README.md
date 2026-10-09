@@ -6,6 +6,8 @@ The loop is original, synthesized for this mod, so there are no licensing worrie
 
 ## Install
 
+Requires **Claude Code 2.1.293 or later**: mods are an early-access feature and gain events with each release. Check with `claude --version`; update with `claude update`.
+
 ```
 /plugin marketplace add lakmadev/claude-mods
 /plugin install lofi-mode@claude-mods

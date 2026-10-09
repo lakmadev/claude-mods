@@ -37,6 +37,8 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 
 ## Install
 
+Requires **Claude Code 2.1.293 or later**: mods are an early-access feature and gain events with each release. Check with `claude --version`; update with `claude update`.
+
 In a Claude Code terminal session:
 
 ```
