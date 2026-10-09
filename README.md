@@ -14,11 +14,11 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 
 ## For fun
 
-![pixel-pet: five evolution forms, six moods](docs/pixel-pet.png)
+![pixel-pet: four forms, six moods](docs/pixel-pet.png)
 
 | Mod | What it does |
 | --- | --- |
-| **pixel-pet** | An animated pixel critter above your prompt. It bounces while Claude works, celebrates finished turns, sweats on errors, naps when you're away, and blushes when you press **Pet ♥**. It earns XP every turn and evolves: teal sprout → purple spark → antenna at level 5 → coral blaze → golden crowned legend at 10. `/pet` for stats, `/pet rename <name>`, `/pet hide`. |
+| **pixel-pet** | A tiny animated pixel critter above your prompt, four rows tall. It bobs while Claude works, bounces with sparkles when a turn finishes, sweats on errors, dozes when you're away, and blushes when you press **♥ pet**. Moods crossfade instead of popping. It levels up every turn and changes colour as it grows: teal sprout → purple spark (lv 3) → coral blaze (lv 6) → golden legend with a crown (lv 10). `/pet` for stats, `/pet rename <name>`, `/pet hide`. |
 | **code-wrapped** | `/wrapped` opens your Claude Code Wrapped: a GitHub-style activity heatmap, hours, lines, streaks, top files and tools, your coding personality (Night Owl 🦉, Refactorer 🧹, Shell Wizard 🧙…) and 14 unlockable achievements that pop as toasts. **Copy share text** puts a one-line brag on your clipboard. |
 | **lofi-mode** | Soft lo-fi beats start when Claude has been working for a few seconds and stop when it finishes. The loop is original and synthesized for this mod. `/lofi` toggles it. macOS audio. |
 
