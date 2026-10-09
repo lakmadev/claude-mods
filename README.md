@@ -18,7 +18,7 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 
 | Mod | What it does |
 | --- | --- |
-| **pixel-pet** | A tiny animated pixel pet above your prompt with a live context meter beside it. It bobs while Claude works, celebrates finished turns, sweats on errors, and dozes when you're away. Click it to pet it. It narrates what Claude is doing (reading, editing, running tests, committing…) with a sliding line, and watches you type: its eyes follow your caret, it winces at backspaces and gasps when you delete a chunk. The gradient context meter glides and shimmers. 28 colours via `/pet color <name>`, previewed as you type. |
+| **pixel-pet** | A tiny animated pixel pet above your prompt. It sleeps (snoring) when things are quiet and wakes slowly when you type. It narrates what Claude is doing with a sliding status line, hatches half-size helpers in their own colours for each subagent, and they wave bye when done. It watches you type, and you click it to pet it. A gradient context meter with your 5-hour and weekly usage sits beside it, details on hover. 28 colours via `/pet color <name>`. |
 | **code-wrapped** | `/wrapped` opens your Claude Code Wrapped: a GitHub-style activity heatmap, hours, lines, streaks, top files and tools, your coding personality (Night Owl 🦉, Refactorer 🧹, Shell Wizard 🧙…) and 14 unlockable achievements that pop as toasts. **Copy share text** puts a one-line brag on your clipboard. |
 | **lofi-mode** | Soft lo-fi beats start when Claude has been working for a few seconds and stop when it finishes. The loop is original and synthesized for this mod. `/lofi` toggles it. macOS audio. |
 
