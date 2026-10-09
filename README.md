@@ -9,7 +9,8 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 **repo-radar** draws your repo as a live map of rectangles, one per folder. Reads glow **cyan**, edits **amber**, failures **red**, and each subagent gets its own colour, so you can watch parallel agents work across your codebase. Glows fade like a radar trace; files touched this session keep a faint tint. `/radar` opens it. [More →](plugins/repo-radar)
 
 ```
-/plugin install repo-radar --marketplace lakmadev/claude-mods
+/plugin marketplace add lakmadev/claude-mods
+/plugin install repo-radar@claude-mods
 ```
 
 ## For fun
@@ -39,10 +40,11 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 In a Claude Code terminal session:
 
 ```
-/plugin install pixel-pet --marketplace lakmadev/claude-mods
+/plugin marketplace add lakmadev/claude-mods
+/plugin install pixel-pet@claude-mods
 ```
 
-Answer `y` to add the marketplace, then pick a scope. Repeat with any other mod name from the table.
+The first line adds this repo as a plugin marketplace (once); the second installs a mod from it. Repeat the second line with any other mod name from the table.
 
 ## Settings
 

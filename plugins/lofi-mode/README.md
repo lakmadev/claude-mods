@@ -7,7 +7,8 @@ The loop is original, synthesized for this mod, so there are no licensing worrie
 ## Install
 
 ```
-/plugin install lofi-mode --marketplace lakmadev/claude-mods
+/plugin marketplace add lakmadev/claude-mods
+/plugin install lofi-mode@claude-mods
 ```
 
 `/lofi` toggles it (`/lofi on`, `/lofi off`); the choice is remembered. Settings (`/config`): `volume` (0.35), `delaySeconds` (4). Audio plays on macOS.

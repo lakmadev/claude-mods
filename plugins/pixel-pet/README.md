@@ -20,7 +20,8 @@ A tiny animated pixel pet that lives above your Claude Code prompt. It sleeps wh
 ## Install
 
 ```
-/plugin install pixel-pet --marketplace lakmadev/claude-mods
+/plugin marketplace add lakmadev/claude-mods
+/plugin install pixel-pet@claude-mods
 ```
 
 ## Commands

@@ -14,7 +14,8 @@ Your **Claude Code Wrapped**: run `/wrapped` for a pane with your year in code.
 ## Install
 
 ```
-/plugin install code-wrapped --marketplace lakmadev/claude-mods
+/plugin marketplace add lakmadev/claude-mods
+/plugin install code-wrapped@claude-mods
 ```
 
 `/wrapped` shows as many weeks as fit (up to 26); `/wrapped 52` asks for a year. Stats start counting from install and stay on your machine (Claude Code's plugin store), kept for 400 days.

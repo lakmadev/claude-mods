@@ -17,7 +17,8 @@ The map and the sweep line between panels animate on their own, without redrawin
 ## Install
 
 ```
-/plugin install repo-radar --marketplace lakmadev/claude-mods
+/plugin marketplace add lakmadev/claude-mods
+/plugin install repo-radar@claude-mods
 ```
 
 `/radar` opens it; `/radar reset` clears the session's trail. With `openOnStart` (on by default), it docks beside the transcript at session start in terminals 144+ columns wide.
