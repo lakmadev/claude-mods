@@ -1,0 +1,10 @@
+{
+  "name": "context-meter",
+  "version": "0.1.0",
+  "description": "Status line with context %, session cost and rate limits; warns before you hit the wall.",
+  "author": { "name": "lakmadev", "url": "https://github.com/lakmadev" },
+  "userConfig": {
+    "contextWarnPercent": { "type": "number", "title": "Context warning (%)", "description": "Toast when the context window fills past this percentage.", "default": 80 },
+    "rateLimitWarnPercent": { "type": "number", "title": "Rate-limit warning (%)", "description": "Toast when a usage window passes this percentage.", "default": 90 }
+  }
+}

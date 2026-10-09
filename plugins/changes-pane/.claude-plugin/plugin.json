@@ -1,0 +1,10 @@
+{
+  "name": "changes-pane",
+  "version": "0.1.0",
+  "description": "A live pane listing every file Claude changed this session, with +/- line counts.",
+  "author": { "name": "lakmadev", "url": "https://github.com/lakmadev" },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "autoOpen": { "type": "boolean", "title": "Open automatically", "description": "Open the pane on the first change of a session (on wide terminals). Otherwise use /changes.", "default": true }
+  }
+}

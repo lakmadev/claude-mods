@@ -1,0 +1,45 @@
+{
+  "name": "claude-mods",
+  "description": "Seven everyday mods for Claude Code: cost meter, safety net, changes pane, notifier, prompt booster, journal and secrets redactor.",
+  "owner": {
+    "name": "lakmadev",
+    "url": "https://github.com/lakmadev"
+  },
+  "plugins": [
+    {
+      "name": "context-meter",
+      "source": "./plugins/context-meter",
+      "description": "Status line with context %, session cost and rate limits; warns before you hit the wall."
+    },
+    {
+      "name": "safety-net",
+      "source": "./plugins/safety-net",
+      "description": "Blocks catastrophic shell commands and asks before risky ones or edits to secret files."
+    },
+    {
+      "name": "changes-pane",
+      "source": "./plugins/changes-pane",
+      "description": "A live pane listing every file Claude changed this session, with +/- line counts."
+    },
+    {
+      "name": "done-notifier",
+      "source": "./plugins/done-notifier",
+      "description": "Chime, toast and desktop notification when a long turn finishes or Claude needs you."
+    },
+    {
+      "name": "prompt-booster",
+      "source": "./plugins/prompt-booster",
+      "description": "Adds repo context to short prompts, plus one-word commands for common tasks."
+    },
+    {
+      "name": "session-journal",
+      "source": "./plugins/session-journal",
+      "description": "Logs what you did with Claude across sessions; /journal and an AI-written /standup."
+    },
+    {
+      "name": "secrets-redactor",
+      "source": "./plugins/secrets-redactor",
+      "description": "Scrubs API keys, tokens and private keys from prompts and tool output before the model sees them."
+    }
+  ]
+}

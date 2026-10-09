@@ -1,0 +1,11 @@
+{
+  "name": "done-notifier",
+  "version": "0.1.0",
+  "description": "Chime, toast and desktop notification when a long turn finishes or Claude needs you.",
+  "author": { "name": "lakmadev", "url": "https://github.com/lakmadev" },
+  "userConfig": {
+    "minSeconds": { "type": "number", "title": "Minimum turn length (s)", "description": "Only notify for turns that ran at least this long.", "default": 30 },
+    "sound": { "type": "boolean", "title": "Play a chime", "description": "Play a short chime (macOS).", "default": true },
+    "desktop": { "type": "boolean", "title": "Desktop notification", "description": "Show an OS notification (macOS osascript, Linux notify-send).", "default": true }
+  }
+}

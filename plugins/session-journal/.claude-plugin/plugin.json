@@ -1,0 +1,10 @@
+{
+  "name": "session-journal",
+  "version": "0.1.0",
+  "description": "Logs what you did with Claude across sessions; /journal and an AI-written /standup.",
+  "author": { "name": "lakmadev", "url": "https://github.com/lakmadev" },
+  "userConfig": {
+    "retentionDays": { "type": "number", "title": "Keep entries for (days)", "description": "Older journal days are deleted at session start.", "default": 30 },
+    "model": { "type": "string", "title": "Standup model", "description": "Model alias used to write /standup.", "default": "haiku" }
+  }
+}

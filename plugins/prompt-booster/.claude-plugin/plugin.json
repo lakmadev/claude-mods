@@ -1,0 +1,10 @@
+{
+  "name": "prompt-booster",
+  "version": "0.1.0",
+  "description": "Adds repo context to short prompts, plus one-word commands for common tasks.",
+  "author": { "name": "lakmadev", "url": "https://github.com/lakmadev" },
+  "userConfig": {
+    "autoContext": { "type": "boolean", "title": "Attach repo context to short prompts", "description": "Give Claude your branch, changed files and recent commits when a prompt is short and vague.", "default": true },
+    "maxWords": { "type": "number", "title": "Short prompt (words)", "description": "Prompts with fewer words than this get repo context.", "default": 15 }
+  }
+}

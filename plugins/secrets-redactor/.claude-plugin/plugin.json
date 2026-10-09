@@ -1,0 +1,9 @@
+{
+  "name": "secrets-redactor",
+  "version": "0.1.0",
+  "description": "Scrubs API keys, tokens and private keys from prompts and tool output before the model sees them.",
+  "author": { "name": "lakmadev", "url": "https://github.com/lakmadev" },
+  "userConfig": {
+    "aggressive": { "type": "boolean", "title": "Also redact password=... assignments", "description": "Redact quoted values assigned to names like password, secret or api_key. Catches more, with some false positives in test fixtures.", "default": false }
+  }
+}

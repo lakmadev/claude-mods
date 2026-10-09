@@ -1,0 +1,9 @@
+{
+  "name": "safety-net",
+  "version": "0.1.0",
+  "description": "Blocks catastrophic shell commands and asks before risky ones or edits to secret files.",
+  "author": { "name": "lakmadev", "url": "https://github.com/lakmadev" },
+  "userConfig": {
+    "strict": { "type": "boolean", "title": "Strict mode", "description": "Refuse risky calls instead of asking. Turn on when running in auto or bypass-permissions mode, where an ask may be approved without you.", "default": false }
+  }
+}
