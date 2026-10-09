@@ -9,15 +9,15 @@ const reading = (percent: number, used = 10, limits = true) => ({
   cost: { usd: 1.234 },
 })
 
-test('on a Claude plan: the windows by name, with gauges and resets; the $ is only an estimate', () => {
+test('on a Claude plan: plain numbers, a reset once a window is tight, no $ estimate', () => {
   const r = reading(80, 85)
-  expect(formatMeter(r, sourceOf(r, 'api'), NOW)).toBe('ctx ▰▰▰▰▱ 80% 160k/200k │ 5h limit ▰▰▰▰▱ 85% resets 1h52m │ weekly ▰▰▱▱▱ 40% resets 3d4h │ Claude plan · ≈$1.23 at API rates')
+  expect(formatMeter(r, sourceOf(r, 'api'), NOW)).toBe('ctx 80% · 5h 85% resets 1h52m · week 40%')
 })
 
 test('on the API or a cloud provider: no windows, and the $ is the bill', () => {
   const r = reading(30, 0, false)
-  expect(formatMeter(r, sourceOf(r, 'api'), NOW)).toBe('ctx ▰▰▱▱▱ 30% 160k/200k │ $1.23 billed · API')
-  expect(formatMeter(r, sourceOf(r, 'bedrock'), NOW)).toContain('$1.23 billed · Bedrock')
+  expect(formatMeter(r, sourceOf(r, 'api'), NOW)).toBe('ctx 30% · $1.23 billed (API)')
+  expect(formatMeter(r, sourceOf(r, 'bedrock'), NOW)).toBe('ctx 30% · $1.23 billed (Bedrock)')
   expect(resetIn('2026-10-09T12:38:00Z', NOW)).toBe('38m')
 })
 

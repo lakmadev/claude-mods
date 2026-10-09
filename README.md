@@ -26,7 +26,7 @@ Eleven mods for [Claude Code](https://claude.com/claude-code). Install the ones 
 
 | Mod | What it does |
 | --- | --- |
-| **context-meter** | Status line that says where you stand and who pays: `ctx ▰▰▰▱▱ 62% 124k/200k │ 5h limit ▰▰▰▰▱ 85% resets 1h52m │ weekly ▰▰▱▱▱ 40% resets 3d4h │ Claude plan · ≈$1.84 at API rates`, or on the API `… │ $1.84 billed · API`. Toasts when context passes 80% or a plan window passes 90%. |
+| **context-meter** | A plain status line: `ctx 62% · 5h 85% resets 1h52m · week 40%` on a Claude plan (the reset shows once a window passes 70%), or `ctx 62% · $1.84 billed (API)` when you pay per token. Toasts when context passes 80% or a plan window passes 90%. |
 | **safety-net** | Refuses catastrophic commands (`rm -rf ~`, `mkfs`, `dd of=/dev/disk`, fork bombs). Asks before risky ones (force-push, `reset --hard`, `curl \| sh`, `DROP TABLE`, `terraform destroy`, `sudo`, …) and before edits to `.env`, keys, `~/.ssh`, `.git/` or shell rc files. |
 | **changes-pane** | Side pane listing every file Claude changed this session with `+/-` line counts. `/changes` opens it. |
 | **done-notifier** | Chime, toast and desktop notification when a turn longer than 30s finishes or Claude is waiting for you. |

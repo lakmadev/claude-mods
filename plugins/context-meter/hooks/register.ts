@@ -6,13 +6,9 @@ type Source = 'plan' | 'gateway' | 'api' | 'bedrock' | 'vertex' | 'foundry'
 // A Claude plan meters usage in a rolling 5-hour window and a weekly one; a gateway may set a spend
 // limit. Neither comes back on the API or a cloud provider, which bill per token instead.
 const LIMIT_NAMES: Record<string, string> = { five_hour: '5h limit', seven_day: 'weekly', seven_day_opus: 'weekly (Opus)', spend_limit: 'spend limit' }
+const SHORT_NAMES: Record<string, string> = { five_hour: '5h', seven_day: 'week', seven_day_opus: 'week (Opus)', spend_limit: 'spend' }
 const SOURCE_NAMES: Record<Source, string> = { plan: 'Claude plan', gateway: 'gateway', api: 'API', bedrock: 'Bedrock', vertex: 'Vertex AI', foundry: 'Foundry' }
 
-const kilo = (n: number) => (n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1000 ? `${Math.round(n / 1000)}k` : String(n))
-const gauge = (percent: number, width = 5) => {
-  const filled = Math.max(percent > 0 ? 1 : 0, Math.min(width, Math.round((percent / 100) * width)))
-  return '▰'.repeat(filled) + '▱'.repeat(width - filled)
-}
 
 // "1h52m", "38m", "3d4h": how long until a window resets.
 export function resetIn(resetsAt: string | undefined, now: number): string | undefined {
@@ -32,22 +28,19 @@ export function sourceOf({ context, rateLimits }: Reading, provider: Source): So
   return context.percent !== undefined ? provider : undefined
 }
 
-// "ctx ▰▰▰▱▱ 62% 124k/200k │ 5h limit ▰▰▰▰▱ 85% resets 1h52m │ weekly ▰▰▱▱▱ 40% resets 3d │ Claude plan · ≈$1.84 at API rates"
-// On a plan the $ is only what the session would cost at API prices; elsewhere it's the bill.
+// "ctx 62% · 5h 85% resets 1h52m · week 40%": plain words and numbers, which read the same in any
+// font (block gauges don't line up in the desktop's). A window's reset shows once it's past 70%.
+// On a plan the $ is only an API-rate estimate, so it's left out; elsewhere it's the bill.
 export function formatMeter({ context, rateLimits, cost }: Reading, source: Source | undefined, now: number): string {
   const parts: string[] = []
-  if (context.percent !== undefined) {
-    parts.push(`ctx ${gauge(context.percent)} ${context.percent}% ${kilo(context.tokens ?? 0)}/${kilo(context.window)}`)
-  }
+  if (context.percent !== undefined) parts.push(`ctx ${context.percent}%`)
   for (const limit of rateLimits) {
-    const reset = resetIn(limit.resetsAt, now)
-    parts.push(`${LIMIT_NAMES[limit.kind] ?? limit.kind} ${gauge(limit.percentUsed)} ${Math.round(limit.percentUsed)}%${reset ? ` resets ${reset}` : ''}`)
+    const reset = limit.percentUsed >= 70 ? resetIn(limit.resetsAt, now) : undefined
+    parts.push(`${SHORT_NAMES[limit.kind] ?? limit.kind} ${Math.round(limit.percentUsed)}%${reset ? ` resets ${reset}` : ''}`)
   }
-  const usd = cost ? `$${cost.usd.toFixed(2)}` : undefined
-  if (source === 'plan') parts.push(`Claude plan${usd ? ` · ≈${usd} at API rates` : ''}`)
-  else if (source) parts.push(`${usd ? `${usd} billed · ` : ''}${SOURCE_NAMES[source]}`)
-  else if (usd) parts.push(usd)
-  return parts.join(' │ ')
+  if (cost && source && source !== 'plan') parts.push(`$${cost.usd.toFixed(2)} billed (${SOURCE_NAMES[source]})`)
+  else if (cost && !source) parts.push(`$${cost.usd.toFixed(2)}`)
+  return parts.join(' · ')
 }
 
 // Warns once per crossing; a reading back under the threshold (after /compact, a window reset) re-arms it.
