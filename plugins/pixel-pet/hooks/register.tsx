@@ -778,6 +778,8 @@ export const register: Register = (on, options) => {
     const current = await read($, view)
     if (e.props.hasSurvey || current.isHidden || e.props.maxRows < 4) return next(e)
     const { Box, Text } = $.ui.resolve(e)
+    // The band is shared: keep what mods later in the chain draw, under the pet.
+    const others = await next(e)
     const now = await $.clock.now()
     const percent = current.meter.percent
     const parts = segments(current.meter, now)
@@ -810,17 +812,20 @@ export const register: Register = (on, options) => {
       const status: StatusViewProps = { name: current.name, line: current.line, calm: current.calm, ...(current.tone === 'plain' ? {} : { color: toneColor(colors, current.tone) }) }
       const gauge: MeterViewProps = { ...(percent === undefined ? {} : { percent }), segments: parts, isWorking: isShimmering, width: METER_CELLS }
       return (
-        <Box gap={2} alignItems="center">
-          <Client key="pet" module="./pet-view.tsx" width={current.scene === 'none' ? 10 : HABITAT_COLUMNS} height={current.scene === 'none' ? 4 : HABITAT_ROWS} props={pet} />
-          <Box flexDirection="column" justifyContent="center">
-            <Client key="status" module="./status-view.tsx" props={status} />
-            <Box key="meter-row" alignItems="flex-end">
-              {helpers.length > 0 && <Client key="minis" module="./minis-view.tsx" props={{ minis: helpers, stamp: now } satisfies MinisViewProps} />}
-              <Client key="meter" module="./meter-view.tsx" props={gauge} />
-              {hint}
-              {details}
+        <Box flexDirection="column">
+          <Box gap={2} alignItems="center">
+            <Client key="pet" module="./pet-view.tsx" width={current.scene === 'none' ? 10 : HABITAT_COLUMNS} height={current.scene === 'none' ? 4 : HABITAT_ROWS} props={pet} />
+            <Box flexDirection="column" justifyContent="center">
+              <Client key="status" module="./status-view.tsx" props={status} />
+              <Box key="meter-row" alignItems="flex-end">
+                {helpers.length > 0 && <Client key="minis" module="./minis-view.tsx" props={{ minis: helpers, stamp: now } satisfies MinisViewProps} />}
+                <Client key="meter" module="./meter-view.tsx" props={gauge} />
+                {hint}
+                {details}
+              </Box>
             </Box>
           </Box>
+          {others}
         </Box>
       )
     }
@@ -877,18 +882,21 @@ export const register: Register = (on, options) => {
       ? <Svg source={sprite} alt={petAlt} width={50} height={40} />
       : <Svg source={habitatSvg(current.scene, isMoving, sprite, scrolledMs)} alt={`${petAlt}, ${whereIn(current.scene)}`} width={HABITAT_WIDTH} height={HABITAT_HEIGHT} />
     return (
-      <Box gap={2} alignItems="center">
-        <Box>
-          {petImage}
-          {hit}
-        </Box>
-        <Box flexDirection="column" justifyContent="center">
-          <Svg source={lineSvg(current.name, current.line, previous, colors, { tone: current.tone, calm: current.calm })} alt={`${current.name} ${current.line}`} width={lineWidth(current.name, current.line, previous)} height={20} />
-          <Box key="meter-row">
-            <Svg source={two.svg} alt={[...helpersAlt, ...card].join('; ') || 'context meter'} width={two.width} height={26} />
-            {details}
+      <Box flexDirection="column">
+        <Box gap={2} alignItems="center">
+          <Box>
+            {petImage}
+            {hit}
+          </Box>
+          <Box flexDirection="column" justifyContent="center">
+            <Svg source={lineSvg(current.name, current.line, previous, colors, { tone: current.tone, calm: current.calm })} alt={`${current.name} ${current.line}`} width={lineWidth(current.name, current.line, previous)} height={20} />
+            <Box key="meter-row">
+              <Svg source={two.svg} alt={[...helpersAlt, ...card].join('; ') || 'context meter'} width={two.width} height={26} />
+              {details}
+            </Box>
           </Box>
         </Box>
+        {others}
       </Box>
     )
   })

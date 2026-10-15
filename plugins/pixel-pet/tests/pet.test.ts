@@ -68,6 +68,7 @@ test('the meter: gradient, numbers, a precise bar, and a pill that glides and sh
 
 test('the band: pet and live meter in the terminal; SVGs and a click layer on desktop', async ($, on) => {
   mock.store(on)
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['other mod'] }) as never)
   mock.clock(on)
   on('session.usage', () => ({ value: USAGE as never }))
   on('command.register', () => ({ value: undefined as never }))
@@ -76,6 +77,7 @@ test('the band: pet and live meter in the terminal; SVGs and a click layer on de
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({ plugin: 'pixel-pet', surface, component: 'AbovePrompt', props: { hasSurvey: false, isWorking: false, maxRows: 12 } as never })
     const drawn = JSON.stringify(await ui.drawn())
+    expect(drawn).toContain('other mod') // the rest of the band chain stays under the pet
     expect(drawn).not.toContain('"type":"Button"')
     expect(drawn).not.toMatch(/\blv\b|XP/)
     if (surface === 'terminal') {
@@ -100,6 +102,7 @@ test('the band: pet and live meter in the terminal; SVGs and a click layer on de
 
 test('a compact drops the old context number until the next reply', async ($, on) => {
   mock.store(on)
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['other mod'] }) as never)
   mock.clock(on)
   on('session.usage', () => ({ value: USAGE as never }))
   on('command.register', () => ({ value: undefined as never }))
@@ -120,6 +123,7 @@ test('a compact drops the old context number until the next reply', async ($, on
 
 test('clicking the sprite pets it', async ($, on) => {
   mock.store(on)
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['other mod'] }) as never)
   mock.clock(on)
   const ui = await $.ui.mount({ plugin: 'pixel-pet', surface: 'terminal', component: 'AbovePrompt', props: { hasSurvey: false, isWorking: false, maxRows: 12 } as never })
   await ui.pointer({ type: 'down', x: 4, y: 2, button: 'left', in: 'pet' })
@@ -129,6 +133,7 @@ test('clicking the sprite pets it', async ($, on) => {
 
 test('on desktop a click on the layer over the sprite pets it, a heart at once, an up alone counts', async ($, on) => {
   mock.store(on)
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['other mod'] }) as never)
   mock.clock(on)
   const ui = await $.ui.mount({ plugin: 'pixel-pet', surface: 'desktop', component: 'AbovePrompt', props: { hasSurvey: false, isWorking: false, maxRows: 12 } as never })
   await ui.pointer({ type: 'up', x: 2, y: 1, button: 'left', in: 'pet-hit' })
@@ -181,6 +186,7 @@ test('the colour names show in the typeahead after /pet color', async ($, on) =>
 
 test('/pet color picks and lists, and the band follows', async ($, on) => {
   mock.store(on)
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['other mod'] }) as never)
   mock.clock(on)
   on('command.run', () => ({}))
   const run = (args: string) => $.command.run({ command: 'pet', args, origin: { kind: 'composer' }, presentation: { isFullscreen: false, columns: 100 } })
@@ -301,6 +307,7 @@ test('terminal: a slot widens a column at a time, holds, then narrows as the hel
 
 test('a new session starts asleep; typing wakes it slowly, then it reads along', async ($, on) => {
   mock.store(on)
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['other mod'] }) as never)
   const clock = mock.clock(on)
   on('command.register', () => ({ value: undefined as never }))
   on('session.start', ($, e) => ({ cwd: e.cwd }))
@@ -322,6 +329,7 @@ test('a new session starts asleep; typing wakes it slowly, then it reads along',
 
 test('a subagent hatches a helper; when it finishes the helper waves bye and leaves', async ($, on) => {
   mock.store(on)
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['other mod'] }) as never)
   const clock = mock.clock(on)
   on('command.register', () => ({ value: undefined as never }))
   on('session.start', ($, e) => ({ cwd: e.cwd }))
@@ -425,6 +433,7 @@ type On = Parameters<TestBody>[1]
 const setUp = async ($: Parameters<TestBody>[0], on: On, more: (on: On) => void = () => undefined) => {
   more(on)
   mock.store(on)
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['other mod'] }) as never)
   const clock = mock.clock(on)
   on('command.register', () => ({ value: undefined as never }))
   on('session.start', ($, e) => ({ cwd: e.cwd }))
